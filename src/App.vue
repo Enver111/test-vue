@@ -15,23 +15,39 @@ import CharacterCard from './views/CharacterCard.vue'
 import Pagination from './views/Pagination.vue'
 import Filters from './views/Filters.vue'
 import Loading from './views/Loading.vue'
-
-const characters = ref([])
+interface Character {
+  id: number
+  name: string
+  location: string
+  status: string
+  species: string
+}
+const characters = ref<Character[]>([])
 const page = ref(1)
 const isLoading = ref(false)
 const nameFilter = ref('')
 const statusFilter = ref('')
+
 const fetchCharacters = async () => {
   isLoading.value = true
   let url = `https://rickandmortyapi.com/api/character/?page=${page.value}`
   if (nameFilter.value) url += `&name=${nameFilter.value}`
   if (statusFilter.value) url += `&status=${statusFilter.value}`
-  const response = await fetch(url)
-  const data = await response.json()
-  characters.value = data.results
-  isLoading.value = false
+  try {
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    const data = await response.json()
+    characters.value = data.results
+  } catch (error) {
+    console.error('Ошибка при загрузке персонажей:', error)
+  } finally {
+    isLoading.value = false
+  }
 }
-const applyFilters = (filters) => {
+
+const applyFilters = (filters: any) => {
   nameFilter.value = filters.name
   statusFilter.value = filters.status
   page.value = 1

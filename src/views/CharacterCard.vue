@@ -1,30 +1,30 @@
 <template>
   <div class="character-cards">
     <div class="character-image">
-      <img :src="character.image" :alt="`Image of ${character.name}`" />
+      <img :src="character?.image" :alt="`Image of ${character?.name}`" />
     </div>
     <div class="character-card">
       <div class="section">
         <a href="#"
-          ><h2>{{ character.name }}</h2></a
+          ><h2>{{ character?.name }}</h2></a
         >
         <div class="status-indicator">
           <div class="status">
             <span
               class="status-circle"
               :class="{
-                alive: character.status === 'Alive',
-                dead: character.status === 'Dead',
-                unknown: character.status === 'unknown'
+                alive: character?.status === 'Alive',
+                dead: character?.status === 'Dead',
+                unknown: character?.status === 'unknown'
               }"
             ></span>
-            {{ character.status + ' - ' + character.species }}
+            {{ character?.status + ' - ' + character?.species }}
           </div>
         </div>
       </div>
       <div class="section">
         <span>Last known location:</span>
-        <a href="#">{{ character.location.name }}</a>
+        <a href="#">{{ character?.location.name }}</a>
       </div>
       <div class="section">
         <span>First seen in: </span>
@@ -39,20 +39,19 @@ import { ref, defineProps, onMounted } from 'vue'
 const props = defineProps({
   character: Object
 })
-const episodeName = ref('Loading...') // Реактивная переменная для имени эпизода
+const episodeName = ref('Loading...')
 onMounted(async () => {
-  if (props.character.episode.length > 0) {
-    episodeName.value = await fetchEpisodeName(props.character.episode[0])
+  if (props.character?.episode.length > 0) {
+    episodeName.value = await fetchEpisodeName(props.character?.episode[0])
   }
 })
-const fetchEpisodeName = async (episodeUrl) => {
+const fetchEpisodeName = async (episodeUrl: string) => {
   try {
     const response = await fetch(episodeUrl)
     const data = await response.json()
     return data.name
   } catch (error) {
     console.error('Ошибка при получении данных эпизода:', error)
-    return 'Error fetching episode name'
   }
 }
 </script>

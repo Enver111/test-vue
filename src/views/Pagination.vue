@@ -9,7 +9,10 @@
 import { defineProps } from 'vue'
 
 const props = defineProps({
-  page: Number,
+  page: {
+    type: Number,
+    default: 1
+  },
   onPrev: Function,
   onNext: Function
 })
