@@ -1,7 +1,13 @@
 <template>
   <div class="character-cards">
     <div class="character-image">
-      <img :src="character?.image" :alt="`Image of ${character?.name}`" />
+      <img
+        :src="character?.image"
+        :alt="`Image of ${character?.name}`"
+        @load="imageLoaded = true"
+        v-show="imageLoaded"
+      />
+      <div class="image-placeholder" v-show="!imageLoaded"></div>
     </div>
     <div class="character-card">
       <div class="section">
@@ -39,6 +45,7 @@ import { ref, defineProps, onMounted } from 'vue'
 const props = defineProps({
   character: Object
 })
+const imageLoaded = ref(false)
 const episodeName = ref('Loading...')
 onMounted(async () => {
   if (props.character?.episode.length > 0) {
@@ -142,5 +149,32 @@ const fetchEpisodeName = async (episodeUrl: string) => {
 }
 .section a {
   font-size: 18px;
+}
+.image-placeholder {
+  width: 220px;
+  height: 220px;
+  margin: 0;
+
+  background: linear-gradient(
+    -45deg,
+    #e2e2e2 25%,
+    #f0f0f0 25%,
+    #f0f0f0 50%,
+    #e2e2e2 50%,
+    #e2e2e2 75%,
+    #f0f0f0 75%,
+    #f0f0f0
+  );
+  background-size: 600% 600%;
+  animation: placeholderShimmer 1s linear infinite;
+}
+
+@keyframes placeholderShimmer {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: -100% 0%;
+  }
 }
 </style>
